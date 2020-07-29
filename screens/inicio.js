@@ -63,10 +63,10 @@ renderSteps(){
      <Block>
     <Block middle flex={0.1} style={{flexDirection: 'row'}} margin={[1, theme.sizes.padding * 2]}>
 
-    <Button style={{backgroundColor: theme.colors.black,width: 100, height: 30 }} shadow onPress={() => this.props.navigation.navigate('Login')}>
+    <Button color={theme.colors.black} style={{width: 100, height: 30 }} shadow onPress={() => this.props.navigation.navigate('Login')}>
       <Text caption center semibold primary>iniciar sesión</Text>
     </Button>
-    <Button style={{backgroundColor: theme.colors.primary, width: 100, height: 30 }} shadow onPress={() => this.props.navigation.navigate('Registro')}>
+    <Button color={theme.colors.primary} style={{ width: 100, height: 30 }} shadow onPress={() => this.props.navigation.navigate('Registro')}>
       <Text caption center semibold>registrar</Text>
     </Button>
       </Block>
@@ -82,7 +82,7 @@ renderSteps(){
        </Block>
         
       <Block middle flex={0.2} margin={[1, theme.sizes.padding * 2]}>
-    <Button style={{backgroundColor: theme.colors.secondary}} shadow onPress={() => this.props.navigation.navigate('Feed')}>
+    <Button color={theme.colors.secondary} shadow onPress={() => this.props.navigation.navigate('Feed')}>
       <Text center semibold>buscar artículos</Text>
     </Button>
       </Block>
