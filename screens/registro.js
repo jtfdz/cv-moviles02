@@ -29,7 +29,7 @@ export default class Registro extends React.Component {
     if (!password) errors.push('password');
     this.setState({ errors, loading: false });
 
- 
+
 
     if (!errors.length) {
     fetch('https://moviles02cv.herokuapp.com/registrar', {
@@ -47,6 +47,7 @@ export default class Registro extends React.Component {
     }),
   }).then((response) => {
       if(response.status === 200){
+      
         Alert.alert(
         'éxito',
         'tu cuenta fue creada',

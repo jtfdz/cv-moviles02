@@ -82,8 +82,8 @@ renderSteps(){
        </Block>
         
       <Block middle flex={0.2} margin={[1, theme.sizes.padding * 2]}>
-    <Button style={{backgroundColor: theme.colors.secondary}} shadow onPress={() => this.props.navigation.navigate('Login')}>
-      <Text center semibold>ver todos los artículos</Text>
+    <Button style={{backgroundColor: theme.colors.secondary}} shadow onPress={() => this.props.navigation.navigate('Feed')}>
+      <Text center semibold>buscar artículos</Text>
     </Button>
       </Block>
         

@@ -34,7 +34,6 @@ export default class Login extends React.Component {
       password: password
     })
   }).then((response) => {
-    
       if(response.status === 200){
         Alert.alert(
         'éxito',
@@ -58,9 +57,10 @@ export default class Login extends React.Component {
     })
     .catch((error) => {
       console.error(error);
-    });
+    })
 
-  
+
+
   }
 
  render(){
