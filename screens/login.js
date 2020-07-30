@@ -2,6 +2,9 @@ import React from 'react';
 import { Alert, ActivityIndicator, Keyboard, StyleSheet, KeyboardAvoidingView } from 'react-native';
 import { Button, Block, Text, Input } from '../components';
 import { theme } from '../constants';
+import fetch from "isomorphic-unfetch";
+
+
 
 export default class Login extends React.Component {
 
@@ -22,20 +25,24 @@ export default class Login extends React.Component {
     const errors = [];
     Keyboard.dismiss();
     this.setState({ loading: true });
-
-
-    fetch('https://moviles02cv.herokuapp.com/login', {
-    credentials: 'include',  
-    method: 'POST',
+    
+    const options = { 
+    method: 'post',
+    credentials: 'include',
     headers: {
-      'Content-Type': 'application/json',
+      'Accept': 'application/json, text/plain, */*',
+      'Content-Type': 'application/json'
     },
-    body: JSON.stringify({
+      body: JSON.stringify({
       username: username,
       password: password
     })
-  }).then((response) => {
+  
+  }  
 
+
+    fetch('https://moviles02cv.herokuapp.com/login', options)
+    .then((response) => {
 
       if(response.status === 200){
         Alert.alert(
@@ -44,19 +51,16 @@ export default class Login extends React.Component {
         [
           {
             text: 'continuar', onPress: () => {
-              navigation.navigate('Feed')
+            
+              navigation.navigate('Feed', {usuario: response.sesionfalsa})
             }
           }
         ],
         { cancelable: false }
-      )        
-
+      ) 
+    
       }
-          // check with backend API or with some static data
-    //if (email !== VALID_EMAIL) { errors.push('email');}
-    //if (password !== VALID_PASSWORD) {errors.push('password');}
 
-    //this.setState({ errors, loading: false });
     })
     .catch((error) => {
       console.error(error);

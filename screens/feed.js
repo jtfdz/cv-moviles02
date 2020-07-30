@@ -13,7 +13,6 @@ import Modal from 'react-native-modalbox';
 import { createStackNavigator } from '@react-navigation/stack';
 
 
-
 const PorArticulo = props =>{
   const [search, setSearch] = useState('');
   const [load, setLoad] = useState(true);
@@ -78,7 +77,7 @@ const PorArticulo = props =>{
       )  
            
         }else{
-          alert(usuarioTipo)
+          console.log(usuarioTipo)
         }
     }
 
@@ -313,8 +312,9 @@ export default class Feed extends React.Component {
         estado: 400
     }
   
+
   componentDidMount() {
-      fetch("https://moviles02cv.herokuapp.com/departamento")
+      fetch("https://moviles02cv.herokuapp.com/departamento", {credentials: 'include'})
       .then(res => res.json())
       .then(
         (result) => {
@@ -331,13 +331,7 @@ export default class Feed extends React.Component {
         }
       )
 
-    fetch("https://moviles02cv.herokuapp.com/articulos", 
-    { 
-      method: 'GET',
-      credentials: 'include',
-
-
-      })
+    fetch("https://moviles02cv.herokuapp.com/articulos", {credentials: 'include'})
       .then(res => res.json())
       .then(
         (result) => {
@@ -371,9 +365,8 @@ export default class Feed extends React.Component {
    const Tab = createBottomTabNavigator();
     const { navigation } = this.props;
 
-
     return (
-   
+
       <NavigationContainer>
         <Tab.Navigator
       screenOptions={({ route }) => ({
