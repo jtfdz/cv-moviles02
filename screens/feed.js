@@ -11,6 +11,9 @@ import images from "../assets/images"
 const { width } = Dimensions.get('window');
 import Modal from 'react-native-modalbox';
 
+
+
+
 const PorArticulo = props =>{
   const [search, setSearch] = useState('');
   const [load, setLoad] = useState(true);
@@ -39,9 +42,6 @@ const PorArticulo = props =>{
     setmodalProduct(datos) 
   }
 
-
-
-
   const Productos = props => props.arrayProductos.map(function(news){
       setLoad(false)
       return(
@@ -52,31 +52,29 @@ const PorArticulo = props =>{
             <Image source={images[news.nombre_departamento]}/>
           </Badge>
           <Text>{news.nombre_articulo}</Text>
-          <Text gray caption>{news.precio}</Text>
+          <Text gray caption>{news.precio}bs c/u</Text>
+                      <Button color={theme.colors.secondary} onPress={() => setisOpen(false)}>
+            <Text bold center>cerrar</Text>
+            </Button>
         </Card>
       </TouchableOpacity> 
     )
     });
 
+
+
       return (  
-         <Block>   
+      <Block>   
       <ScrollView 
         showsVerticalScrollIndicator={false}
-        style={{paddingVertial: theme.sizes.base * 2, backgroundColor: theme.colors.secondary}}
-        >
+        style={{paddingVertial: theme.sizes.base * 2, backgroundColor: theme.colors.secondary}}>
       
-  
           <SearchBar
           round lightTheme
           placeholder="buscar artículos..."
           onChangeText={text => { SearchFilterFunction(text) }}
           value={search}
         />
-
-                   
-     
-   
-
 
       <Block flex={false} row space="between" style={styles.categories}>        
 
@@ -91,20 +89,21 @@ const PorArticulo = props =>{
       </Block>
  
       </ScrollView>  
-      
+
          <Modal isOpen={isOpen} animationType="fade" presentationStyle="fullScreen" onClosed={() => setisOpen(false)} style={[styles.modal]} position={"bottom"} swipeArea={20}>
-          <ScrollView>
-            <View>
-              <Text h1 bold><Image source={images[modalProduct.nombre_departamento]}/>{modalProduct.nombre_articulo}</Text>
-              <Text bold>departamento: <Text>{modalProduct.nombre_departamento}</Text></Text>
-              <Text bold>vendedor: <Text>{modalProduct.nombre_usuario}</Text></Text>
-              <Text bold>contacto: <Text>{modalProduct.correo}</Text></Text>              
-              <Text bold>precio: <Text>{modalProduct.precio}</Text></Text>
-              <Text bold>cantidad disponible: <Text>{modalProduct.cantidad}</Text></Text>
-              <Button color={theme.colors.secondary} onPress={() => setisOpen(false)}>
-              <Text bold center>cerrar</Text>
-              </Button>
-            </View>
+          <ScrollView style={[styles.sview]}>
+            <Block>
+            <Image source={images[modalProduct.nombre_departamento]}/>
+            <Text h1 bold>{modalProduct.nombre_articulo}</Text>
+            <Text><Text bold>departamento:</Text> <Text>{modalProduct.nombre_departamento}</Text></Text>
+            <Text><Text bold>vendedor: </Text><Text>{modalProduct.nombre_usuario}</Text></Text>
+            <Text><Text bold>contacto: </Text><Text>{modalProduct.correo}</Text></Text>              
+            <Text><Text bold>precio: </Text><Text>{modalProduct.precio}</Text></Text>
+            <Text><Text bold>cantidad disponible: </Text><Text>{modalProduct.cantidad}</Text></Text>
+            <Button color={theme.colors.secondary} onPress={() => setisOpen(false)}>
+            <Text bold center>cerrar</Text>
+            </Button>
+            </Block>
           </ScrollView>
         </Modal>
         </Block>         
@@ -114,15 +113,48 @@ const PorArticulo = props =>{
 
 
 const PorDepartamento = props =>{
+  const [search, setSearch] = useState('');
   let arrayholding = props.data;
   const [load, setLoad] = useState(true);
+  let arrayTodos = props.productos;
+  const [arrayProductos, setarrayProducto] = useState([]);
+  const [loadProductos, setloadProductos] = useState(false);
+  const [nombreDepartamento, setnombreDepartamento] = useState('');
+  const [isOpen, setisOpen] = useState(false);
+  const [modalProduct, setmodalProduct] = useState({}); 
 
+  function articulosDepartamento(nom_dep){
+   setloadProductos(true)
+   setnombreDepartamento(nom_dep)
+   let arrayTemporal = []; 
+    arrayTodos.map(function(elements){
+      if(elements.nombre_departamento === nom_dep){
+        arrayTemporal.push(elements);
+      }
+    })
+    return arrayTemporal;
+  }
 
+  function SearchFilterFunction(text) {
+  
+  const newData = arrayTodos.map(function(elements){
+    const itemData = elements.nombre_articulo ? elements.nombre_articulo.toUpperCase() : ''.toUpperCase();
+    const textData = text.toUpperCase()      
+    if(itemData.indexOf(textData) > -1){
+      return elements
+    }
+  });
+  const result = newData.filter(word => word !== undefined);
+  arrayTodos = result
+  setarrayProducto(arrayTodos)
+  setSearch(text)
+  }
 
+  
   const Departamentos = props => props.arrayDepartamentos.map(function(news){
     setLoad(false)
     return(
-  <TouchableOpacity key={news.id_departamento} onPress={()=> this.props.navigation.navigate('Feed')}>
+  <TouchableOpacity key={news.id_departamento} onPress={()=> setarrayProducto(articulosDepartamento(news.nombre))}>
       <Card center middle shadow style={styles.category}>
         <Badge>
           <Image source={images[news.nombre]}/>
@@ -133,17 +165,66 @@ const PorDepartamento = props =>{
   )
   });
 
-  return (
+  function mostrarProducto(datos){
+    setisOpen(true)
+    setmodalProduct(datos) 
+  }
 
+  const ProductosDepartamentosNotEmpty = props => props.productosfiltrados.map(function(news){
+    return(
+    <TouchableOpacity key={news.id_usuario} onPress={()=> mostrarProducto(news)}>      
+        <Card center middle shadow >
+          <Badge>
+            <Image source={images[news.nombre_departamento]}/>
+          </Badge>
+          <Text>{news.nombre_articulo}</Text>
+          <Text gray caption>{news.precio}</Text>
+        </Card>
+      </TouchableOpacity> 
+    )
+  }); 
+
+  const ProductosDepartamentos = props => {
+  return(
+    <Block>
+
+      <Text bold center>{props.nombreDep}</Text>
+      {props.productosfiltrados.length > 0?
+      <ProductosDepartamentosNotEmpty productosfiltrados={props.productosfiltrados}/>:
+      <Text center>no hay productos bajo este departamento</Text>
+      }
+
+      <Button color={theme.colors.primary} onPress={() => setloadProductos(false)}>
+      <Text bold center>volver</Text>
+      </Button>     
+    </Block>
+  )
+  }
+
+  return (
+    <Block>
       <ScrollView 
         showsVerticalScrollIndicator={false}
         style={{paddingVertial: theme.sizes.base * 2, backgroundColor: theme.colors.secondary}}
         >
+        {loadProductos?
+         <SearchBar
+          round lightTheme
+          placeholder="buscar artículos..."
+          onChangeText={text => { SearchFilterFunction(text) }}
+          value={search}
+        />:null}
+
 
       <Block flex={false} row space="between" style={styles.categories}>
         
-
-      <Departamentos arrayDepartamentos={arrayholding} />
+      {loadProductos?
+      <Block>
+      <ProductosDepartamentos nombreDep={nombreDepartamento} productosfiltrados={arrayProductos} />
+      </Block>
+      :<Departamentos arrayDepartamentos={arrayholding} />
+      }
+      
     
      {load? 
       <Block style={{ flex: 1, paddingTop: 20 }}>
@@ -153,17 +234,27 @@ const PorDepartamento = props =>{
 
       </Block>  
       </ScrollView> 
+  
+         <Modal isOpen={isOpen} animationType="fade" presentationStyle="fullScreen" onClosed={() => setisOpen(false)} style={[styles.modal]} position={"bottom"} swipeArea={20}>
+          <ScrollView style={[styles.sview]}>
+            <Block >
+            <Image source={images[modalProduct.nombre_departamento]}/>
+            <Text h1 bold>{modalProduct.nombre_articulo}</Text>
+            <Text><Text bold>departamento:</Text> <Text>{modalProduct.nombre_departamento}</Text></Text>
+            <Text><Text bold>vendedor: </Text><Text>{modalProduct.nombre_usuario}</Text></Text>
+            <Text><Text bold>contacto: </Text><Text>{modalProduct.correo}</Text></Text>              
+            <Text><Text bold>precio: </Text><Text>{modalProduct.precio}</Text></Text>
+            <Text><Text bold>cantidad disponible: </Text><Text>{modalProduct.cantidad}</Text></Text>
+            <Button color={theme.colors.secondary} onPress={() => setisOpen(false)}>
+            <Text bold center>cerrar</Text>
+            </Button>
+            </Block>
+          </ScrollView>
+        </Modal>
 
-
-
+  </Block>
   );
 }
-
-
-
-
-
-
 
 
 
@@ -236,7 +327,7 @@ export default class Feed extends React.Component {
         }
       )
 
-
+  alert(this.state.tipo)
 
 
   }
@@ -274,23 +365,17 @@ export default class Feed extends React.Component {
       tabBarOptions={{
         activeTintColor: theme.colors.primary,
         inactiveTintColor: theme.colors.secondary,
-      }}        
-        
-        >
+      }}>
+
         <Tab.Screen name="artículos" component={ () => <PorArticulo data={this.state.data} />} />
-        <Tab.Screen name="departamentos" component={ () => <PorDepartamento data={this.state.datos} />} />
-        {this.state.tipo == 3? <Tab.Screen name="crear" component={crearArticulo} /> : null }         
+        <Tab.Screen name="departamentos" component={ () => <PorDepartamento productos={this.state.data} data={this.state.datos} />} />
+        {this.state.tipo === 3? <Tab.Screen name="crear" component={crearArticulo} /> : null }         
         </Tab.Navigator>
       </NavigationContainer>
     
-
-
-
-
       );
      
     
-
  }
  }
 
@@ -326,12 +411,15 @@ categories: {
   marginTop: theme.sizes.base ,
   marginBottom: theme.sizes.base * 3.5,
 },
-  modal: {
-    paddingLeft: 10,
-    textAlign: 'center',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: theme.colors.primary
-  },
+modal: {
+  paddingLeft: 10,
+  backgroundColor: theme.colors.primary
+},
+sview: {
+  flex: 1,
+  textAlign: 'center',
+  justifyContent: 'center',
+  alignItems: 'center',
 
+},
 });
