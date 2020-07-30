@@ -22,9 +22,9 @@ const images = [
   require('./assets/images/explore_4.png'),
   require('./assets/images/explore_5.png'),
   require('./assets/images/explore_6.png'),
-  require('./assets/images/illustration_1.png'),
-  require('./assets/images/illustration_2.png'),
-  require('./assets/images/illustration_3.png'),
+  require('./assets/images/laptop.png'),
+  require('./assets/images/contacto.png'),  
+  require('./assets/images/flying-money.gif'), 
   require('./assets/images/avatar.png'),
 ];
 

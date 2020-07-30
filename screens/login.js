@@ -23,17 +23,20 @@ export default class Login extends React.Component {
     Keyboard.dismiss();
     this.setState({ loading: true });
 
+
     fetch('https://moviles02cv.herokuapp.com/login', {
+    credentials: 'include',  
     method: 'POST',
     headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify({
       username: username,
       password: password
     })
   }).then((response) => {
+
+
       if(response.status === 200){
         Alert.alert(
         'éxito',

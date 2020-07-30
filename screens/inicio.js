@@ -18,9 +18,9 @@ renderIllustrations(){
    return(
     <FlatList horizontal pagingEnabled scrollEnabled
   showsHorizontalScrollIndicator={false} scrollEventThrottle={16} snapToAlignment="center" data={illustrations} extraDate={this.state} keyExtractor={(item, index) => `${item.id}`}
-  renderItem={({ item }) => ( <Image
+  renderItem={({ item }) => ( <Block><Image
       source={item.source} resizeMode="contain" style={{ width, height: height / 2, overflow: 'visible' }}
-    /> )} 
+    /><Text center bold caption>{item.text}</Text><Text primary center bold caption>{item.rosado}</Text></Block> )} 
     onScroll={
      Animated.event([{
        nativeEvent: { contentOffset: { x: this.scrollX } }
@@ -99,15 +99,16 @@ renderSteps(){
 
 InicioScreen.defaultProps = {
   illustrations: [
-    { id: 1, source: require('../assets/images/illustration_1.png') },
-    { id: 2, source: require('../assets/images/illustration_2.png') },
-    { id: 3, source: require('../assets/images/illustration_3.png') },
+    { id: 1, source: require('../assets/images/laptop.png'), text: '¿deseas algo?', rosado:' ¡ubícalo aquí!' },
+    { id: 2, source: require('../assets/images/contacto.png'), text: '¿alguna duda del producto?', rosado:' ¡contacta al vendedor!' },
+    { id: 3, source: require('../assets/images/flying-money.gif'), text: '¡el único requisito:', rosado:'  dinero!' },
   ],
 };
 
 const styles = StyleSheet.create({
   stepsContainer: {
     position: 'absolute',
+    top: 100,
     bottom: theme.sizes.base * 3,
     right: 0,
     left: 0,

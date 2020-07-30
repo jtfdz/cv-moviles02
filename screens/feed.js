@@ -10,7 +10,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import images from "../assets/images"
 const { width } = Dimensions.get('window');
 import Modal from 'react-native-modalbox';
-
+import { createStackNavigator } from '@react-navigation/stack';
 
 
 
@@ -18,6 +18,7 @@ const PorArticulo = props =>{
   const [search, setSearch] = useState('');
   const [load, setLoad] = useState(true);
   let arrayholder = props.data;
+  let tipo = props.tipo;
   const [finalholder, setFinalholder] = useState(arrayholder);
   const [isOpen, setisOpen] = useState(false);
   const [modalProduct, setmodalProduct] = useState({});
@@ -52,14 +53,34 @@ const PorArticulo = props =>{
             <Image source={images[news.nombre_departamento]}/>
           </Badge>
           <Text>{news.nombre_articulo}</Text>
-          <Text gray caption>{news.precio}bs c/u</Text>
-                      <Button color={theme.colors.secondary} onPress={() => setisOpen(false)}>
-            <Text bold center>cerrar</Text>
-            </Button>
+          <Text gray caption>{news.precio}bs</Text>
         </Card>
       </TouchableOpacity> 
     )
     });
+
+    function chequearTipo(usuarioTipo){
+        if(usuarioTipo === 0){
+         Alert.alert(
+        'error',
+        'debe iniciar sesión para ello',
+        [
+          {
+            text: 'continuar', onPress: () => {
+              props.navigation.navigate('Registro')
+            }},
+          {
+            text: 'cancelar', onPress: () => {
+              console.log('cancelar')
+            }}
+        ],
+        { cancelable: false }
+      )  
+           
+        }else{
+          alert(usuarioTipo)
+        }
+    }
 
 
 
@@ -100,8 +121,11 @@ const PorArticulo = props =>{
             <Text><Text bold>contacto: </Text><Text>{modalProduct.correo}</Text></Text>              
             <Text><Text bold>precio: </Text><Text>{modalProduct.precio}</Text></Text>
             <Text><Text bold>cantidad disponible: </Text><Text>{modalProduct.cantidad}</Text></Text>
+            <Button color={theme.colors.secondary} onPress={() => chequearTipo(tipo)}>
+              <Text bold center>adquirir</Text>
+            </Button>          
             <Button color={theme.colors.secondary} onPress={() => setisOpen(false)}>
-            <Text bold center>cerrar</Text>
+              <Text bold center>cerrar</Text>
             </Button>
             </Block>
           </ScrollView>
@@ -307,7 +331,13 @@ export default class Feed extends React.Component {
         }
       )
 
-    fetch("https://moviles02cv.herokuapp.com/articulos")
+    fetch("https://moviles02cv.herokuapp.com/articulos", 
+    { 
+      method: 'GET',
+      credentials: 'include',
+
+
+      })
       .then(res => res.json())
       .then(
         (result) => {
@@ -327,7 +357,7 @@ export default class Feed extends React.Component {
         }
       )
 
-  alert(this.state.tipo)
+
 
 
   }
@@ -335,11 +365,11 @@ export default class Feed extends React.Component {
 
  static navigationOptions = {title: 'feed'}
 
-
+  
 
  render(){
    const Tab = createBottomTabNavigator();
-
+    const { navigation } = this.props;
 
 
     return (
@@ -367,8 +397,8 @@ export default class Feed extends React.Component {
         inactiveTintColor: theme.colors.secondary,
       }}>
 
-        <Tab.Screen name="artículos" component={ () => <PorArticulo data={this.state.data} />} />
-        <Tab.Screen name="departamentos" component={ () => <PorDepartamento productos={this.state.data} data={this.state.datos} />} />
+        <Tab.Screen name="artículos" component={ () => <PorArticulo navigation={ navigation } tipo={this.state.tipo} data={this.state.data} />} />
+        <Tab.Screen name="departamentos" component={ () => <PorDepartamento tipo={this.state.tipo} productos={this.state.data} data={this.state.datos} />} />
         {this.state.tipo === 3? <Tab.Screen name="crear" component={crearArticulo} /> : null }         
         </Tab.Navigator>
       </NavigationContainer>
